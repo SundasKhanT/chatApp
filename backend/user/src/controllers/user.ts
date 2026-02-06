@@ -84,21 +84,30 @@ export const myProfile = tryCatch(async (req: AuthnenticatedRequest, res) => {
 });
 
 export const updateName = tryCatch(async (req: AuthnenticatedRequest, res) => {
-  const user = await User.findById(req.user?._id);
+  const user = await User.findById(req.user!._id);
 
   if (!user) {
-    res.status(404).json({
+    return res.status(404).json({
       message: "Please Login",
     });
-    return;
   }
 
-  user.name = req.body;
+  const { name } = req.body;
+
+  if (!name) {
+    return res.status(400).json({
+      message: "Name is required",
+    });
+  }
+
+  user.name = name;
+
   await user.save();
+
   const token = generateToken(user);
 
   res.json({
-    message: "USer updated",
+    message: "User updated successfully",
     user,
     token,
   });
