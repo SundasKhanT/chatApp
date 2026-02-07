@@ -1,13 +1,18 @@
 import type { Request, Response, NextFunction } from "express";
-import type { User } from "../model/User.js";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 
-export interface AuthnenticatedRequest extends Request {
+interface User extends Document {
+  _id: string;
+  name: string;
+  email: string;
+}
+
+export interface AuthenticatedRequest extends Request {
   user?: User | null;
 }
 
 export const isAuth = async (
-  req: AuthnenticatedRequest,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
@@ -40,3 +45,5 @@ export const isAuth = async (
     });
   }
 };
+
+export default isAuth;
